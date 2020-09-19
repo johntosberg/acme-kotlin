@@ -3,10 +3,14 @@
  */
 package github.osberg.acme
 
+import github.osberg.acme.config.RetrofitClientConfig
+import github.osberg.acme.service.EngagementClassifierService
+import github.osberg.acme.service.ForecastConverterService
 import github.osberg.acme.service.OpenWeatherService
 
-val openWeatherService = OpenWeatherService()
+val openWeatherService = OpenWeatherService( RetrofitClientConfig().openWeatherApi)
+val engagementClassifierService = EngagementClassifierService(ForecastConverterService(), openWeatherService)
 
 fun main(args: Array<String>) {
-    println(openWeatherService.getFiveDayForecastFor("Minneapolis"))
+    engagementClassifierService.printClassifiersForCity("Minneapolis")
 }
