@@ -4,13 +4,24 @@
 package github.osberg.acme
 
 import github.osberg.acme.config.RetrofitClientConfig
-import github.osberg.acme.service.EngagementClassifierService
+import github.osberg.acme.service.CommunicationClassifierService
 import github.osberg.acme.service.ForecastConverterService
 import github.osberg.acme.service.OpenWeatherService
+import kotlin.system.exitProcess
 
 val openWeatherService = OpenWeatherService( RetrofitClientConfig().openWeatherApi)
-val engagementClassifierService = EngagementClassifierService(ForecastConverterService(), openWeatherService)
+val engagementClassifierService = CommunicationClassifierService(ForecastConverterService(), openWeatherService)
 
 fun main(args: Array<String>) {
-    engagementClassifierService.printClassifiersForCity("Minneapolis")
+    println() //Create some space between current startup warnings from groovy and our output
+    sanitizeArgs(args)
+    engagementClassifierService.printClassifiersForCity(args[0])
+}
+
+fun sanitizeArgs(args: Array<String>) {
+    when {
+        args.size != 1 -> println("Usage: java -jar acme-kotlin-all.jar <city>").also { exitProcess(1) }
+        args[0] != "Minneapolis" -> println("Application only tested with \"Minneapolis\", results may be unpredictable")
+        else -> return
+    }
 }

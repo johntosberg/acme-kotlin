@@ -1,11 +1,15 @@
 package github.osberg.acme.service
 
-import spock.lang.Specification
+import github.osberg.acme.BaseSpec
+import github.osberg.acme.model.internal.InternalFiveDayForecast
+import github.osberg.acme.model.internal.InternalOneDayForecast
+import github.osberg.acme.model.openweather.OpenWeatherApiResponse
+import github.osberg.acme.model.openweather.DailyForecast
 import spock.lang.Unroll
 
 import java.time.ZonedDateTime
 
-class ForecastConverterServiceSpec extends Specification {
+class ForecastConverterServiceSpec extends BaseSpec {
 
     ForecastConverterService forecastConverterService = new ForecastConverterService()
 
@@ -19,6 +23,23 @@ class ForecastConverterServiceSpec extends Specification {
 
         then:
         zonedDateTime
+    }
+
+    void "Properly converters to internal model"() {
+        given:
+        OpenWeatherApiResponse deserializedApiResponse = getTestForecastData()
+
+        when:
+        InternalFiveDayForecast internalFiveDayForecast = forecastConverterService.convertToInternal(deserializedApiResponse)
+
+        then:
+        internalFiveDayForecast
+        internalFiveDayForecast.city == deserializedApiResponse.city.name
+        internalFiveDayForecast.forecastListInternal.eachWithIndex { InternalOneDayForecast entry, int i ->
+            DailyForecast apiResponse = deserializedApiResponse.dailyForecastList[i]
+            assert entry.weatherType == apiResponse.weatherBody[0].weatherType
+            assert entry.cityTimeZoneOffset == deserializedApiResponse.city.timezoneSeconds
+        }
     }
 
     @Unroll

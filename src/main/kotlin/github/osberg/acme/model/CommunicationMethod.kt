@@ -4,5 +4,5 @@ enum class CommunicationMethod {
     TEXT,
     EMAIL,
     PHONE,
-    TOO_HOT_FOR_COMMUNICATING
+    REFRAIN
 }

@@ -1,18 +1,19 @@
 package github.osberg.acme.service
 
 import github.osberg.acme.api.OpenWeatherApi
-import github.osberg.acme.config.RetrofitClientConfig
-import github.osberg.acme.model.openweather.ForecastData
+import github.osberg.acme.model.openweather.OpenWeatherApiResponse
 
-class OpenWeatherService(val openWeatherApi: OpenWeatherApi) {
+open class OpenWeatherService(val openWeatherApi: OpenWeatherApi) {
 
-    fun getFiveDayForecastFor(city: String): ForecastData? {
+    fun getFiveDayForecastFor(city: String): OpenWeatherApiResponse? {
         val response = openWeatherApi.getFiveDayForecastForCity("$city,us").execute()
-        if (response.isSuccessful) {
-            return response.body()
+        return if (response.isSuccessful) {
+            response.body()
         } else {
-            println(response.message())
-            return null
+            println("Something went wrong in Open Weather API Call. " +
+                    "Error code=${response.code()} " +
+                    "Error body=${response.errorBody()}")
+            null
         }
     }
 }
