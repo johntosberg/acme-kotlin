@@ -3,6 +3,8 @@
 The purpose of this application is to determine what communication method to use based on the upcoming five day forecast for Minneapolis.
 It uses the [OpenWeatherApi](https://openweathermap.org/forecast5)'s five day forecast API to get the weather.
 
+For ease of use, *my free API key* is exposed directly in the code. Please don't abuse it.
+
 ## Rules:
 
 - The best time to engage a customer via a text message is when it is sunny and warmer than 75
